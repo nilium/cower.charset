@@ -165,6 +165,9 @@ Type TCharacterSet
 	
 	Method FindLastInString:Int(s$, from%=-1)
 		Local result:Int = -1, found:Int
+		If from < 0 Or from >= s.Length Then
+			from = s.Length-1
+		EndIf
 		For Local cr:TCharacterRange = EachIn _ranges
 			found = cr.FindLastInString(s, from)
 			If found <> -1 And (found < result Or result = -1) Then
@@ -456,14 +459,14 @@ Type TMutableCharacterSet Extends TCharacterSet
 	'#region Threaded methods
 	
 	?Threaded
-	Method FindInString:Int(s$, from%=0)
+	Method FindInString:Int(s$, from%)
 		_lock.Lock
 		Local res:Int = Super.FindInString(s,from)
 		_lock.Unlock
 		Return res
 	End Method
 	
-	Method FindLastInString:Int(s$, from%=-1)
+	Method FindLastInString:Int(s$, from%)
 		_lock.Lock
 		Local res:Int = Super.FindLastInString(s,from)
 		_lock.Unlock
@@ -557,6 +560,11 @@ Type TCharacterRange
 	End Method
 	
 	Method FindInString:Int( str$, from%=0 )
+		If from < 0 Then
+			from = 0
+		ElseIf from >= str.Length Then
+			Return -1
+		EndIf
 		For Local idx:Int = from Until str.Length
 			If Contains(str[idx]) Then
 				Return idx
@@ -565,7 +573,10 @@ Type TCharacterRange
 		Return -1
 	End Method
 	
-	Method FindLastInString:Int( str$, from%=0 )
+	Method FindLastInString:Int( str$, from%=-1 )
+		If from = -1 Then
+			from = str.Length-1
+		EndIf
 		For Local idx:Int = from To 0 Step -1
 			If Contains(str[idx]) Then
 				Return idx
