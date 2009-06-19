@@ -148,6 +148,14 @@ Type TCharacterSet
 		Return Self
 	End Method
 	
+	Method InitWithRanges:TCharacterSet(ranges:Int[])
+		Init
+		For Local idx:Int = 0 Until ranges.Length Step 2
+			__addRange(ranges[idx], ranges[idx+1])
+		Next
+		Return Self
+	End Method
+	
 	'#endregion
 	
 	'#region Charset operations
@@ -436,6 +444,10 @@ Type TMutableCharacterSet Extends TCharacterSet
 	
 	Method InitWithRange:TMutableCharacterSet(begin:Short, length:Short)
 		Return TMutableCharacterSet(Super.InitWithRange(begin, length))
+	End Method
+	
+	Method InitWithRanges:TMutableCharacterSet(ranges:Int[])
+		Return TMutableCharacterSet(Super.InitWithRanges(ranges))
 	End Method
 	
 	'#endregion
